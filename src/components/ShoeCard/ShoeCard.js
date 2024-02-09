@@ -35,15 +35,22 @@ const ShoeCard = ({
     <Link href={`/shoe/${slug}`}>
       <Wrapper>
         <ImageWrapper>
-          <Image alt="" src={imageSrc} />
+          <Image alt='' src={imageSrc} />
+          {variant === 'on-sale' && <SaleFlag variant={variant}>Sale</SaleFlag>}
+          {variant === 'new-release' && (
+            <NewFlag variant={variant}>New Release</NewFlag>
+          )}
         </ImageWrapper>
         <Spacer size={12} />
         <Row>
           <Name>{name}</Name>
-          <Price>{formatPrice(price)}</Price>
+          <Price variant={variant}>{formatPrice(price)}</Price>
         </Row>
         <Row>
           <ColorInfo>{pluralize('Color', numOfColors)}</ColorInfo>
+          {variant === 'on-sale' && (
+            <SalePrice>{formatPrice(salePrice)}</SalePrice>
+          )}
         </Row>
       </Wrapper>
     </Link>
@@ -55,16 +62,26 @@ const Link = styled.a`
   color: inherit;
 `;
 
-const Wrapper = styled.article``;
+const Wrapper = styled.article`
+  flex: 1 1 340px;
+  aspect-ratio: 1;
+`;
 
 const ImageWrapper = styled.div`
   position: relative;
+  flex: 1;
 `;
 
-const Image = styled.img``;
+const Image = styled.img`
+  width: 100%;
+  border-radius: 16px 16px 4px 4px;
+`;
 
 const Row = styled.div`
   font-size: 1rem;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
 `;
 
 const Name = styled.h3`
@@ -72,7 +89,10 @@ const Name = styled.h3`
   color: ${COLORS.gray[900]};
 `;
 
-const Price = styled.span``;
+const Price = styled.span`
+  text-decoration: ${p => (p.variant === 'on-sale' ? 'line-through' : 'none')};
+  color: ${p => (p.variant === 'on-sale' ? COLORS.gray[700] : 'inherit')};
+`;
 
 const ColorInfo = styled.p`
   color: ${COLORS.gray[700]};
@@ -81,6 +101,24 @@ const ColorInfo = styled.p`
 const SalePrice = styled.span`
   font-weight: ${WEIGHTS.medium};
   color: ${COLORS.primary};
+`;
+
+const Flag = styled.div`
+  position: absolute;
+  top: 12px;
+  right: -4px;
+  color: ${COLORS.white};
+  padding: 8px 12px;
+  border-radius: 2px;
+  font-weight: ${WEIGHTS.bold};
+`;
+
+const NewFlag = styled(Flag)`
+  background-color: ${COLORS.secondary};
+`;
+
+const SaleFlag = styled(Flag)`
+  background-color: ${COLORS.primary};
 `;
 
 export default ShoeCard;
